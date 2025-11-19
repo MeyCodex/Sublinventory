@@ -23,7 +23,7 @@ export default function AppLayout() {
         </>
       )}
       <div
-        className={`flex flex-col overflow-hidden transition-all duration-300 ease-in-out ${
+        className={`flex flex-col h-screen overflow-hidden transition-all duration-300 ease-in-out ${
           isCollapsed ? "md:ml-20" : "md:ml-64"
         }`}
       >

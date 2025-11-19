@@ -26,10 +26,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div
-      className="relative w-full max-w-sm rounded-2xl bg-gray-800 p-8 pt-24 shadow-xl transition-all duration-300 ease-out animate-fade-in
-                  md:max-w-md "
-    >
+    <div className="relative w-full max-w-sm rounded-2xl bg-gray-800 p-8 pt-24 shadow-xl transition-all duration-300 ease-out animate-fade-in md:max-w-md ">
       <img
         src={logo}
         alt="Logo Subliminarte Graphic"
@@ -43,47 +40,34 @@ export default function LoginPage() {
           placeholder="Introduce tu correo"
           register={register("email")}
           error={errors.email}
+          variant="brand"
         />
-        <div>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-400 mb-1"
+
+        <div className="relative">
+          <FormField
+            id="password"
+            label="Contraseña"
+            type={showPassword ? "text" : "password"}
+            placeholder="••••••••••"
+            register={register("password")}
+            error={errors.password}
+            variant="brand"
+            className="pr-10"
+          />
+          <button
+            type="button"
+            className="absolute right-0 top-[37px] flex items-center pr-3 text-gray-600 hover:text-gray-400 cursor-pointer"
+            onClick={() => setShowPassword(!showPassword)}
+            aria-label={
+              showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+            }
           >
-            Contraseña
-          </label>
-          <div className="relative mt-1">
-            <input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              {...register("password")}
-              className={`block w-full rounded-lg border-gray-600 bg-gray-700 px-4 py-2.5 pr-10 text-gray-100 shadow-sm transition-all duration-200
-                        focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none
-                        placeholder:text-gray-500 text-sm ${
-                          errors.password ? "border-red-500 ring-red-500" : ""
-                        }`}
-              placeholder="••••••••••"
-              aria-invalid={errors.password ? "true" : "false"}
-            />
-            <button
-              type="button"
-              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-600 hover:text-gray-400 cursor-pointer"
-              onClick={() => setShowPassword(!showPassword)}
-              aria-label={
-                showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
-              }
-            >
-              {showPassword ? (
-                <RiEyeOffLine className="h-5 w-5" />
-              ) : (
-                <RiEyeLine className="h-5 w-5" />
-              )}
-            </button>
-          </div>
-          {errors.password && (
-            <p className="mt-1 text-xs text-red-400 font-medium">
-              {errors.password.message}
-            </p>
-          )}
+            {showPassword ? (
+              <RiEyeOffLine className="h-5 w-5" />
+            ) : (
+              <RiEyeLine className="h-5 w-5" />
+            )}
+          </button>
         </div>
 
         {authError && (
@@ -97,6 +81,7 @@ export default function LoginPage() {
           isLoading={isButtonLoading}
           loadingText="Iniciando sesión..."
           className="mt-2"
+          variant="brand"
         >
           Iniciar sesión
         </Button>

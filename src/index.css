@@ -15,7 +15,7 @@
   --color-destructive: #ef4444;
   --color-destructive-foreground: #ffffff;
   --color-border: #e2e8f0;
-  --color-input: #ffffff;
+  --color-input: #f1f5f9;
   --color-ring: #3b82f6;
   --radius-lg: 0.5rem;
   --radius-md: calc(0.5rem - 2px);
@@ -30,14 +30,14 @@ html.dark {
   --color-muted-foreground: #94a3b8;
   --color-primary: #60a5fa; 
   --color-primary-foreground: #0b1120
-  --color-secondary: #334155;
-  --color-secondary-foreground: #e2e8f0;
+  --color-secondary: #e2e8f0;
+  --color-secondary-foreground: #1e293b;
   --color-accent: #334155;
   --color-accent-foreground: #f1f5f9;
   --color-destructive: #dc2626;
   --color-destructive-foreground: #ffffff;
   --color-border: #334155;
-  --color-input: #1e293b;
+  --color-input: #0b1120;
   --color-ring: #60a5fa;
 }
 
@@ -75,6 +75,16 @@ body {
   }
   .animate-shake {
     animation: shake 0.5s ease-in-out;
+  }
+
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type=number] {
+    appearance: textfield;
   }
 }
 

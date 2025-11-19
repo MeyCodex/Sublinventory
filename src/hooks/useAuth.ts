@@ -61,14 +61,13 @@ export function useAuth() {
       const { error: signOutError } = await supabase.auth.signOut();
       if (signOutError) {
         setError("Error al cerrar sesión.");
-        setIsButtonLoading(false);
       }
     } catch (err: any) {
       setError(`Ocurrió un error inesperado al cerrar sesión.`);
+    } finally {
       setIsButtonLoading(false);
     }
   };
-
   return {
     login,
     logout,
