@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createSupply, getSupplies } from "@/api/inventoryApi.ts";
+import {
+  createSupply,
+  getSupplies,
+  updateSupply,
+  deleteSupply,
+} from "@/api/inventoryApi.ts";
 import { TableSkeleton } from "@/components/ui/TableSkeleton";
 import { CardSkeleton } from "@/components/ui/CardSkeleton";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -17,13 +22,19 @@ import { InventoryTable } from "@/components/inventory/InventoryTable";
 import { InventoryCardList } from "@/components/inventory/InventoryCardList";
 import { Modal } from "@/components/ui/Modal";
 import { InventoryForm } from "@/components/inventory/InventoryForm";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 
 function InventoryPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const queryClient = useQueryClient();
+  const [supplyToEdit, setSupplyToEdit] = useState<SupplyWithCategory | null>(
+    null
+  );
+  const [supplyToDelete, setSupplyToDelete] =
+    useState<SupplyWithCategory | null>(null);
 
+  const queryClient = useQueryClient();
   const {
     data: supplies,
     isLoading,
@@ -32,28 +43,54 @@ function InventoryPage() {
     queryKey: ["supplies", debouncedSearchTerm],
     queryFn: () => getSupplies(debouncedSearchTerm),
   });
-
   const createSupplyMutation = useMutation({
     mutationFn: createSupply,
     onSuccess: () => {
-      console.log("Insumo creado exitosamente");
       queryClient.invalidateQueries({ queryKey: ["supplies"] });
-      setIsModalOpen(false);
+      handleCloseModal();
     },
-    onError: (err) => {
-      console.error("Error al crear el insumo:", err.message);
-    },
+    onError: (err) => console.error(err),
   });
+  const updateSupplyMutation = useMutation({
+    mutationFn: updateSupply,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["supplies"] });
+      handleCloseModal();
+    },
+    onError: (err) => console.error(err),
+  });
+  const deleteSupplyMutation = useMutation({
+    mutationFn: deleteSupply,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["supplies"] });
+      setSupplyToDelete(null);
+    },
+    onError: (err) => console.error(err),
+  });
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSupplyToEdit(null);
+  };
 
   const handleEdit = (supply: SupplyWithCategory) => {
-    console.log("Editar:", supply.name);
+    setSupplyToEdit(supply);
+    setIsModalOpen(true);
   };
   const handleDelete = (supply: SupplyWithCategory) => {
-    console.log("Borrar:", supply.name);
+    setSupplyToDelete(supply);
+  };
+  const confirmDelete = () => {
+    if (supplyToDelete) {
+      deleteSupplyMutation.mutate(supplyToDelete.id);
+    }
   };
 
-  const handleCreateSubmit = (data: SupplyFormData) => {
-    createSupplyMutation.mutate(data);
+  const handleFormSubmit = (data: SupplyFormData) => {
+    if (supplyToEdit) {
+      updateSupplyMutation.mutate({ ...data, id: supplyToEdit.id });
+    } else {
+      createSupplyMutation.mutate(data);
+    }
   };
 
   if (error) {
@@ -64,6 +101,7 @@ function InventoryPage() {
       </div>
     );
   }
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
@@ -89,7 +127,7 @@ function InventoryPage() {
           </Button>
         </Toolbar>
       </div>
-      {/* Escritorio */}
+
       <div className="hidden md:flex flex-1 flex-col">
         {isLoading ? (
           <TableSkeleton />
@@ -101,7 +139,7 @@ function InventoryPage() {
           />
         )}
       </div>
-      {/* Móvil */}
+
       <div className="block md:hidden flex-1 space-y-4 overflow-y-auto">
         {isLoading ? (
           <CardSkeleton rows={5} hasSubtitle={true} />
@@ -113,18 +151,28 @@ function InventoryPage() {
           />
         )}
       </div>
-
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Nuevo insumo"
+        onClose={handleCloseModal}
+        title={supplyToEdit ? "Editar Insumo" : "Nuevo Insumo"}
         size="lg"
       >
         <InventoryForm
-          onSubmit={handleCreateSubmit}
-          onClose={() => setIsModalOpen(false)}
+          onSubmit={handleFormSubmit}
+          onClose={handleCloseModal}
+          initialData={supplyToEdit}
         />
       </Modal>
+      <ConfirmationModal
+        isOpen={!!supplyToDelete}
+        onClose={() => setSupplyToDelete(null)}
+        onConfirm={confirmDelete}
+        title="¿Eliminar insumo?"
+        description={`¿Estás seguro de que quieres eliminar "${supplyToDelete?.name}"? Esta acción no se puede deshacer y podría afectar a reportes históricos.`}
+        confirmText="Eliminar"
+        isLoading={deleteSupplyMutation.isPending}
+        variant="destructive"
+      />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { getCategories } from "@/api/inventoryApi";
 import {
   supplyFormSchema,
   type SupplyFormData,
+  type SupplyWithCategory,
 } from "@/schemas/inventorySchema";
 import { FormField } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/Button";
@@ -12,9 +13,14 @@ import { Button } from "@/components/ui/Button";
 interface InventoryFormProps {
   onSubmit: (data: SupplyFormData) => void;
   onClose: () => void;
+  initialData?: SupplyWithCategory | null;
 }
 
-export function InventoryForm({ onSubmit, onClose }: InventoryFormProps) {
+export function InventoryForm({
+  onSubmit,
+  onClose,
+  initialData,
+}: InventoryFormProps) {
   const { data: categories, isLoading: isLoadingCategories } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
@@ -26,23 +32,39 @@ export function InventoryForm({ onSubmit, onClose }: InventoryFormProps) {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(supplyFormSchema),
-    defaultValues: {
-      name: "",
-      category_id: undefined,
-      description: "",
-      color: "",
-      size: "",
-      quantity: "",
-      minimum_stock: "",
-      measurement_unit: "",
-      purchase_price: undefined,
-      supplier: "",
-    },
+    defaultValues: initialData
+      ? {
+          name: initialData.name,
+          category_id: initialData.category_id,
+          description: initialData.description ?? "",
+          color: initialData.color ?? "",
+          size: initialData.size ?? "",
+          quantity: initialData.quantity,
+          minimum_stock: initialData.minimum_stock,
+          measurement_unit: initialData.measurement_unit,
+          purchase_price: initialData.purchase_price,
+          supplier: initialData.supplier ?? "",
+        }
+      : {
+          name: "",
+          category_id: undefined,
+          description: "",
+          color: "",
+          size: "",
+          quantity: "",
+          minimum_stock: "",
+          measurement_unit: "",
+          purchase_price: undefined,
+          supplier: "",
+        },
   });
 
   const handleValidSubmit = (data: SupplyFormData) => {
     onSubmit(data);
   };
+
+  const submitText = initialData ? "Actualizar" : "Guardar";
+  const loadingText = initialData ? "Actualizando..." : "Guardando...";
 
   return (
     <form onSubmit={handleSubmit(handleValidSubmit)} noValidate>
@@ -50,10 +72,10 @@ export function InventoryForm({ onSubmit, onClose }: InventoryFormProps) {
         <div className="md:col-span-2">
           <FormField
             id="name"
-            label="Nombre del insumo"
+            label="Nombre del Insumo"
             register={register("name")}
             error={errors.name}
-            placeholder="Ej: Polera algodón"
+            placeholder="Ej: Polera Algodón Negra"
           />
         </div>
 
@@ -72,7 +94,7 @@ export function InventoryForm({ onSubmit, onClose }: InventoryFormProps) {
             ${errors.category_id ? "border-destructive ring-destructive" : ""}`}
           >
             <option value="">
-              {isLoadingCategories ? "Cargando..." : "Selecciona la categoría"}
+              {isLoadingCategories ? "Cargando..." : "Selecciona una categoría"}
             </option>
             {categories?.map((cat) => (
               <option key={cat.id} value={cat.id}>
@@ -88,7 +110,7 @@ export function InventoryForm({ onSubmit, onClose }: InventoryFormProps) {
         </div>
         <FormField
           id="purchase_price"
-          label="Precio de compra"
+          label="Precio de Compra"
           type="number"
           register={register("purchase_price")}
           error={errors.purchase_price}
@@ -96,7 +118,7 @@ export function InventoryForm({ onSubmit, onClose }: InventoryFormProps) {
         />
         <FormField
           id="quantity"
-          label="Stock actual"
+          label="Stock Actual"
           type="number"
           register={register("quantity")}
           error={errors.quantity}
@@ -104,7 +126,7 @@ export function InventoryForm({ onSubmit, onClose }: InventoryFormProps) {
         />
         <FormField
           id="minimum_stock"
-          label="Stock mínimo"
+          label="Stock Mínimo"
           type="number"
           register={register("minimum_stock")}
           error={errors.minimum_stock}
@@ -112,7 +134,7 @@ export function InventoryForm({ onSubmit, onClose }: InventoryFormProps) {
         />
         <FormField
           id="measurement_unit"
-          label="Unidad de medida"
+          label="Unidad de Medida"
           register={register("measurement_unit")}
           error={errors.measurement_unit}
           placeholder="Ej: unidades, metros, etc."
@@ -122,7 +144,7 @@ export function InventoryForm({ onSubmit, onClose }: InventoryFormProps) {
           label="Proveedor (Opcional)"
           register={register("supplier")}
           error={errors.supplier}
-          placeholder="Ej: Importadora textil"
+          placeholder="Ej: Importadora Textil"
         />
         <FormField
           id="color"
@@ -166,6 +188,7 @@ export function InventoryForm({ onSubmit, onClose }: InventoryFormProps) {
           )}
         </div>
       </div>
+
       <div className="flex items-center justify-end gap-4 mt-6 pt-4 border-t border-border">
         <Button
           type="button"
@@ -179,10 +202,10 @@ export function InventoryForm({ onSubmit, onClose }: InventoryFormProps) {
           type="submit"
           variant="primary"
           isLoading={isSubmitting}
-          loadingText="Guardando..."
+          loadingText={loadingText}
           className="w-full md:w-auto"
         >
-          Guardar insumo
+          {submitText}
         </Button>
       </div>
     </form>
