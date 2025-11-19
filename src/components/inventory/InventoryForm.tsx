@@ -1,11 +1,10 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
-import { getCategories } from "@/api/inventoryApi";
 import {
   supplyFormSchema,
   type SupplyFormData,
   type SupplyWithCategory,
+  type Category,
 } from "@/schemas/inventorySchema";
 import { FormField } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/Button";
@@ -14,18 +13,17 @@ interface InventoryFormProps {
   onSubmit: (data: SupplyFormData) => void;
   onClose: () => void;
   initialData?: SupplyWithCategory | null;
+  categories: Category[] | undefined;
+  isLoadingCategories: boolean;
 }
 
 export function InventoryForm({
   onSubmit,
   onClose,
   initialData,
+  categories,
+  isLoadingCategories,
 }: InventoryFormProps) {
-  const { data: categories, isLoading: isLoadingCategories } = useQuery({
-    queryKey: ["categories"],
-    queryFn: getCategories,
-  });
-
   const {
     register,
     handleSubmit,
@@ -72,7 +70,7 @@ export function InventoryForm({
         <div className="md:col-span-2">
           <FormField
             id="name"
-            label="Nombre del Insumo"
+            label="Nombre del insumo"
             register={register("name")}
             error={errors.name}
             placeholder="Ej: Polera Algodón Negra"
@@ -108,9 +106,10 @@ export function InventoryForm({
             </p>
           )}
         </div>
+
         <FormField
           id="purchase_price"
-          label="Precio de Compra"
+          label="Precio de compra"
           type="number"
           register={register("purchase_price")}
           error={errors.purchase_price}
@@ -118,7 +117,7 @@ export function InventoryForm({
         />
         <FormField
           id="quantity"
-          label="Stock Actual"
+          label="Stock actual"
           type="number"
           register={register("quantity")}
           error={errors.quantity}
@@ -126,7 +125,7 @@ export function InventoryForm({
         />
         <FormField
           id="minimum_stock"
-          label="Stock Mínimo"
+          label="Stock mínimo"
           type="number"
           register={register("minimum_stock")}
           error={errors.minimum_stock}
@@ -134,7 +133,7 @@ export function InventoryForm({
         />
         <FormField
           id="measurement_unit"
-          label="Unidad de Medida"
+          label="Unidad de medida"
           register={register("measurement_unit")}
           error={errors.measurement_unit}
           placeholder="Ej: unidades, metros, etc."
