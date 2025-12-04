@@ -66,8 +66,8 @@ export function InventoryForm({
 
   return (
     <form onSubmit={handleSubmit(handleValidSubmit)} noValidate>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-        <div className="md:col-span-2">
+      <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+        <div className="col-span-2">
           <FormField
             id="name"
             label="Nombre del insumo"
@@ -76,8 +76,7 @@ export function InventoryForm({
             placeholder="Ej: Polera Algodón Negra"
           />
         </div>
-
-        <div>
+        <div className="col-span-2">
           <label
             htmlFor="category_id"
             className="block text-sm font-medium text-muted-foreground mb-1"
@@ -106,14 +105,20 @@ export function InventoryForm({
             </p>
           )}
         </div>
-
         <FormField
           id="purchase_price"
-          label="Precio de compra"
+          label="Precio compra"
           type="number"
           register={register("purchase_price")}
           error={errors.purchase_price}
           placeholder="Ej: 3500"
+        />
+        <FormField
+          id="measurement_unit"
+          label="Unidad medida"
+          register={register("measurement_unit")}
+          error={errors.measurement_unit}
+          placeholder="Ej: un, mts"
         />
         <FormField
           id="quantity"
@@ -123,6 +128,7 @@ export function InventoryForm({
           error={errors.quantity}
           placeholder="Ej: 50"
         />
+
         <FormField
           id="minimum_stock"
           label="Stock mínimo"
@@ -131,35 +137,30 @@ export function InventoryForm({
           error={errors.minimum_stock}
           placeholder="Ej: 10"
         />
-        <FormField
-          id="measurement_unit"
-          label="Unidad de medida"
-          register={register("measurement_unit")}
-          error={errors.measurement_unit}
-          placeholder="Ej: unidades, metros, etc."
-        />
-        <FormField
-          id="supplier"
-          label="Proveedor (Opcional)"
-          register={register("supplier")}
-          error={errors.supplier}
-          placeholder="Ej: Importadora Textil"
-        />
+        <div className="col-span-2">
+          <FormField
+            id="supplier"
+            label="Proveedor (Opcional)"
+            register={register("supplier")}
+            error={errors.supplier}
+            placeholder="Ej: Importadora Textil"
+          />
+        </div>
         <FormField
           id="color"
-          label="Color (Opcional)"
+          label="Color (Op)"
           register={register("color")}
           error={errors.color}
           placeholder="Ej: Negro"
         />
         <FormField
           id="size"
-          label="Talla/Tamaño (Opcional)"
+          label="Talla (Op)"
           register={register("size")}
           error={errors.size}
           placeholder="Ej: L"
         />
-        <div className="md:col-span-2">
+        <div className="col-span-2">
           <label
             htmlFor="description"
             className="block text-sm font-medium text-muted-foreground mb-1"

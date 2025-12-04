@@ -99,7 +99,7 @@ function InventoryPage() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
         <PageHeader
           title="Gestión de inventario"
           description="Gestiona tus materiales y productos en stock."
@@ -151,11 +151,21 @@ function InventoryPage() {
         {isLoading ? (
           <CardSkeleton rows={5} hasSubtitle={true} />
         ) : (
-          <InventoryCardList
-            supplies={supplies || []}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+          <>
+            <InventoryCardList
+              supplies={supplies || []}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+            <Pagination
+              pageIndex={pageIndex}
+              pageSize={pageSize}
+              totalCount={totalCount}
+              setPageIndex={setPageIndex}
+              setPageSize={setPageSize}
+              isLoading={isFetching}
+            />
+          </>
         )}
       </div>
 

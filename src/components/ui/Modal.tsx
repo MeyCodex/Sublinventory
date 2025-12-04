@@ -41,6 +41,7 @@ export function Modal({
         className={`
           bg-card rounded-lg shadow-xl w-full
           flex flex-col
+          max-h-[90vh]
           ${sizeClasses[size]}
           ${className}
         `}
@@ -58,7 +59,7 @@ export function Modal({
           </div>
         )}
 
-        <div className="p-6 overflow-y-auto">{children}</div>
+        <div className="p-4 overflow-y-auto">{children}</div>
       </div>
     </div>,
     document.body
