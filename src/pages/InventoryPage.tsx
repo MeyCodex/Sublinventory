@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TableSkeleton } from "@/components/ui/TableSkeleton";
 import { CardSkeleton } from "@/components/ui/CardSkeleton";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -17,10 +17,13 @@ import { Modal } from "@/components/ui/Modal";
 import { InventoryForm } from "@/components/inventory/InventoryForm";
 import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 import { useInventory } from "@/hooks/useInventory";
+import { usePagination } from "@/hooks/usePagination";
+import { Pagination } from "@/components/ui/Pagination";
 
 function InventoryPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 400);
+  const { pageIndex, pageSize, setPageIndex, setPageSize } = usePagination();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [supplyToEdit, setSupplyToEdit] = useState<SupplyWithCategory | null>(
     null
@@ -29,7 +32,9 @@ function InventoryPage() {
     useState<SupplyWithCategory | null>(null);
   const {
     supplies,
+    totalCount,
     isLoading,
+    isFetching,
     error,
     categories,
     isLoadingCategories,
@@ -37,7 +42,11 @@ function InventoryPage() {
     updateSupply,
     deleteSupply,
     isDeleting,
-  } = useInventory(debouncedSearchTerm);
+  } = useInventory(debouncedSearchTerm, pageIndex, pageSize);
+
+  useEffect(() => {
+    setPageIndex(0);
+  }, [debouncedSearchTerm, setPageIndex]);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -118,11 +127,23 @@ function InventoryPage() {
         {isLoading ? (
           <TableSkeleton />
         ) : (
-          <InventoryTable
-            supplies={supplies || []}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+          <>
+            <InventoryTable
+              supplies={supplies || []}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+            <div className="mt-auto">
+              <Pagination
+                pageIndex={pageIndex}
+                pageSize={pageSize}
+                totalCount={totalCount}
+                setPageIndex={setPageIndex}
+                setPageSize={setPageSize}
+                isLoading={isFetching}
+              />
+            </div>
+          </>
         )}
       </div>
       {/* Móvil */}

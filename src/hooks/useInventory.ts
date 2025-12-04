@@ -1,4 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  keepPreviousData,
+} from "@tanstack/react-query";
 import {
   getSupplies,
   createSupply,
@@ -6,18 +11,22 @@ import {
   deleteSupply,
   getCategories,
 } from "@/api/inventoryApi";
+import { DEFAULT_PAGE_SIZE } from "@/config/constants";
 
-export function useInventory(searchTerm: string = "") {
+export function useInventory(
+  searchTerm: string = "",
+  pageIndex: number = 0,
+  pageSize: number = DEFAULT_PAGE_SIZE
+) {
   const queryClient = useQueryClient();
-
   const suppliesQuery = useQuery({
-    queryKey: ["supplies", searchTerm],
-    queryFn: () => getSupplies(searchTerm),
+    queryKey: ["supplies", searchTerm, pageIndex, pageSize],
+    queryFn: () => getSupplies(searchTerm, pageIndex, pageSize),
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 1,
     networkMode: "always",
+    placeholderData: keepPreviousData,
   });
-
   const categoriesQuery = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
@@ -51,8 +60,10 @@ export function useInventory(searchTerm: string = "") {
   });
 
   return {
-    supplies: suppliesQuery.data,
+    supplies: suppliesQuery.data?.data || [],
+    totalCount: suppliesQuery.data?.count || 0,
     isLoading: suppliesQuery.isLoading,
+    isFetching: suppliesQuery.isFetching,
     isError: suppliesQuery.isError,
     error: suppliesQuery.error,
     categories: categoriesQuery.data,

@@ -4,6 +4,7 @@ import {
   type SupplyFormData,
   type SupplyWithCategory,
 } from "@/schemas/inventorySchema";
+import type { PaginatedResponse } from "@/config/constants";
 
 export type UpdateSupplyData = SupplyFormData & {
   id: number;
@@ -11,17 +12,21 @@ export type UpdateSupplyData = SupplyFormData & {
 
 // Insumos
 export const getSupplies = async (
-  searchTerm: string
-): Promise<SupplyWithCategory[]> => {
+  searchTerm: string,
+  pageIndex: number,
+  pageSize: number
+): Promise<PaginatedResponse<SupplyWithCategory>> => {
   const { data, error } = await supabase.rpc("get_supplies", {
     search_term_arg: searchTerm,
+    page_index_arg: pageIndex,
+    page_size_arg: pageSize,
   });
 
   if (error) {
     console.error("Error fetching supplies:", error.message);
     throw new Error(`No se pudieron cargar los insumos: ${error.message}`);
   }
-  return data || [];
+  return data as PaginatedResponse<SupplyWithCategory>;
 };
 
 export const createSupply = async (supplyData: SupplyFormData) => {
@@ -39,7 +44,6 @@ export const createSupply = async (supplyData: SupplyFormData) => {
   });
 
   if (error) {
-    console.error("Error creating supply:", error.message);
     throw new Error(`No se pudo crear el insumo: ${error.message}`);
   }
   return data;
@@ -58,10 +62,10 @@ export const updateSupply = async (supplyData: UpdateSupplyData) => {
     measurement_unit_arg: supplyData.measurement_unit,
     purchase_price_arg: supplyData.purchase_price,
     supplier_arg: supplyData.supplier,
+    updated_at: new Date().toISOString(),
   });
 
   if (error) {
-    console.error("Error updating supply:", error.message);
     throw new Error(`No se pudo actualizar el insumo: ${error.message}`);
   }
   return data;
@@ -71,7 +75,6 @@ export const deleteSupply = async (id: number) => {
   const { data, error } = await supabase.rpc("delete_supply", { id_arg: id });
 
   if (error) {
-    console.error("Error deleting supply:", error.message);
     throw new Error(`No se pudo eliminar el insumo: ${error.message}`);
   }
   return data;
@@ -82,7 +85,6 @@ export const getCategories = async (): Promise<Category[]> => {
   const { data, error } = await supabase.rpc("get_categories");
 
   if (error) {
-    console.error("Error fetching categories:", error.message);
     throw new Error(`No se pudieron cargar las categorías: ${error.message}`);
   }
   return data || [];
@@ -94,7 +96,6 @@ export const createCategory = async (name: string) => {
   });
 
   if (error) {
-    console.error("Error creating category:", error.message);
     throw new Error(`No se pudo crear la categoría: ${error.message}`);
   }
   return data;
