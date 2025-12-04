@@ -62,7 +62,6 @@ export const updateSupply = async (supplyData: UpdateSupplyData) => {
     measurement_unit_arg: supplyData.measurement_unit,
     purchase_price_arg: supplyData.purchase_price,
     supplier_arg: supplyData.supplier,
-    updated_at: new Date().toISOString(),
   });
 
   if (error) {

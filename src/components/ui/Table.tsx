@@ -77,7 +77,7 @@ const TableCell = forwardRef<
 >(({ className, ...props }, ref) => (
   <td
     ref={ref}
-    className={`p-4 align-middle text-foreground ${className}`}
+    className={`px-4 py-2 align-middle text-foreground ${className}`}
     {...props}
   />
 ));

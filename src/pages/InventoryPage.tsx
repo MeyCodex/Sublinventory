@@ -133,7 +133,7 @@ function InventoryPage() {
               onEdit={handleEdit}
               onDelete={handleDelete}
             />
-            <div className="mt-auto">
+            <div className="mt-4">
               <Pagination
                 pageIndex={pageIndex}
                 pageSize={pageSize}
@@ -147,7 +147,7 @@ function InventoryPage() {
         )}
       </div>
       {/* Móvil */}
-      <div className="block md:hidden flex-1 space-y-4 overflow-y-auto">
+      <div className="block md:hidden space-y-4 pb-4">
         {isLoading ? (
           <CardSkeleton rows={5} hasSubtitle={true} />
         ) : (
