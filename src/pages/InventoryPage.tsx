@@ -181,7 +181,7 @@ function InventoryPage() {
         onConfirm={confirmDelete}
         title="ELIMINAR INSUMO"
         description={`¿Estás seguro de que quieres eliminar "${supplyToDelete?.name}"? Esta acción no se puede deshacer.`}
-        confirmText="Eliminar"
+        confirmText="Sí, eliminar"
         isLoading={isDeleting}
         variant="destructive"
       />

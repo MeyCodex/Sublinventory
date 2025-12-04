@@ -26,7 +26,7 @@ export function ConfirmationModal({
   onConfirm,
   title = "¿Estás seguro?",
   description = "Esta acción no se puede deshacer.",
-  confirmText = "Sí, eliminar",
+  confirmText = "Confirmar",
   cancelText = "Cancelar",
   isLoading = false,
   variant = "destructive",

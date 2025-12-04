@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { DEFAULT_PAGE_SIZE, type PaginationState } from "@/config/constants";
 
 export function usePagination(initialPageSize: number = DEFAULT_PAGE_SIZE) {
@@ -7,17 +7,17 @@ export function usePagination(initialPageSize: number = DEFAULT_PAGE_SIZE) {
     pageSize: initialPageSize,
   });
 
-  const setPageIndex = (pageIndex: number) => {
+  const setPageIndex = useCallback((pageIndex: number) => {
     setPagination((prev) => ({ ...prev, pageIndex }));
-  };
+  }, []);
 
-  const setPageSize = (pageSize: number) => {
+  const setPageSize = useCallback((pageSize: number) => {
     setPagination((prev) => ({ ...prev, pageSize, pageIndex: 0 }));
-  };
+  }, []);
 
-  const resetPagination = () => {
+  const resetPagination = useCallback(() => {
     setPagination({ pageIndex: 0, pageSize: initialPageSize });
-  };
+  }, [initialPageSize]);
 
   return {
     pagination,
