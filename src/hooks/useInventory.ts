@@ -22,8 +22,6 @@ export function useInventory(
   const suppliesQuery = useQuery({
     queryKey: ["supplies", searchTerm, pageIndex, pageSize],
     queryFn: () => getSupplies(searchTerm, pageIndex, pageSize),
-    refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 1,
     networkMode: "always",
     placeholderData: keepPreviousData,
   });
