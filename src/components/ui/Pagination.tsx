@@ -84,7 +84,7 @@ export function Pagination({
         <button
           onClick={() => setPageIndex(0)}
           disabled={pageIndex === 0 || isLoading}
-          className="h-9 w-9 flex items-center justify-center rounded-md border border-border bg-card text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="h-9 w-9 flex items-center justify-center rounded-md border border-border bg-card text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
           title="Primera página"
         >
           <RiArrowLeftDoubleLine className="h-4 w-4" />
@@ -93,7 +93,7 @@ export function Pagination({
         <button
           onClick={() => setPageIndex(pageIndex - 1)}
           disabled={pageIndex === 0 || isLoading}
-          className="h-9 w-9 flex items-center justify-center rounded-md border border-border bg-card text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="h-9 w-9 flex items-center justify-center rounded-md border border-border bg-card text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
           title="Página anterior"
         >
           <RiArrowLeftSLine className="h-4 w-4" />
@@ -119,10 +119,10 @@ export function Pagination({
               onClick={() => setPageIndex(pageNum - 1)}
               disabled={isLoading}
               className={`
-                h-9 w-9 flex items-center justify-center rounded-md text-sm font-medium transition-colors
+                h-9 w-9 flex items-center justify-center rounded-md text-sm font-medium transition-colors cursor-pointer
                 ${
                   isActive
-                    ? "bg-primary text-primary-foreground border border-primary shadow-sm"
+                    ? "bg-primary text-primary-foreground border border-primary shadow-sm "
                     : "bg-card border border-border text-foreground hover:bg-accent hover:text-accent-foreground"
                 }
               `}
@@ -135,7 +135,7 @@ export function Pagination({
         <button
           onClick={() => setPageIndex(pageIndex + 1)}
           disabled={pageIndex >= totalPages - 1 || isLoading}
-          className="h-9 w-9 flex items-center justify-center rounded-md border border-border bg-card text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="h-9 w-9 flex items-center justify-center rounded-md border border-border bg-card text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
           title="Página siguiente"
         >
           <RiArrowRightSLine className="h-4 w-4" />
@@ -143,7 +143,7 @@ export function Pagination({
         <button
           onClick={() => setPageIndex(totalPages - 1)}
           disabled={pageIndex >= totalPages - 1 || isLoading}
-          className="h-9 w-9 flex items-center justify-center rounded-md border border-border bg-card text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="h-9 w-9 flex items-center justify-center rounded-md border border-border bg-card text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
           title="Última página"
         >
           <RiArrowRightDoubleLine className="h-4 w-4" />

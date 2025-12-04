@@ -19,10 +19,11 @@ export function useInventory(
   pageSize: number = DEFAULT_PAGE_SIZE
 ) {
   const queryClient = useQueryClient();
+
   const suppliesQuery = useQuery({
     queryKey: ["supplies", searchTerm, pageIndex, pageSize],
-    queryFn: () => getSupplies(searchTerm, pageIndex, pageSize),
-    networkMode: "always",
+    queryFn: ({ signal }) =>
+      getSupplies(searchTerm, pageIndex, pageSize, signal),
     placeholderData: keepPreviousData,
   });
   const categoriesQuery = useQuery({
@@ -30,7 +31,6 @@ export function useInventory(
     queryFn: getCategories,
     staleTime: 1000 * 60 * 10,
     refetchOnWindowFocus: false,
-    networkMode: "always",
   });
 
   const createMutation = useMutation({
@@ -40,7 +40,6 @@ export function useInventory(
     },
     onError: (err) => console.error("Error creating:", err),
   });
-
   const updateMutation = useMutation({
     mutationFn: updateSupply,
     onSuccess: () => {
@@ -48,7 +47,6 @@ export function useInventory(
     },
     onError: (err) => console.error("Error updating:", err),
   });
-
   const deleteMutation = useMutation({
     mutationFn: deleteSupply,
     onSuccess: () => {

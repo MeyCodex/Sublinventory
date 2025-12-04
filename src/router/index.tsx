@@ -1,24 +1,32 @@
-import { createBrowserRouter, Outlet } from "react-router-dom";
-import AppLayout from "@/components/layouts/AppLayout";
+import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import AuthLayout from "@/components/layouts/AuthLayout";
+import AppLayout from "@/components/layouts/AppLayout";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
-import DashboardPage from "@/pages/DashboardPage";
-import SalesPage from "@/pages/SalesPage";
-import InventoryPage from "@/pages/InventoryPage";
-import CustomersPage from "@/pages/CustomersPage";
-import ReportsPage from "@/pages/ReportsPage";
-import SettingsPage from "@/pages/SettingsPage";
-import LoginPage from "@/pages/auth/LoginPage";
 import { AuthListener } from "@/components/auth/AuthListener";
+import { Spinner } from "@/components/ui/Spinner";
 
-function Root() {
-  return (
-    <>
-      <AuthListener />
-      <Outlet />
-    </>
-  );
-}
+const LoginPage = lazy(() => import("@/pages/auth/LoginPage"));
+const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
+const InventoryPage = lazy(() => import("@/pages/InventoryPage"));
+const SalesPage = lazy(() => import("@/pages/SalesPage"));
+const CustomersPage = lazy(() => import("@/pages/CustomersPage"));
+const ReportsPage = lazy(() => import("@/pages/ReportsPage"));
+const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
+
+const PageLoader = () => (
+  <div className="flex h-full items-center justify-center">
+    <Spinner size="lg" className="text-primary" />
+  </div>
+);
+
+const Root = () => (
+  <>
+    <AuthListener />
+    <Outlet />
+  </>
+);
+
 export const router = createBrowserRouter([
   {
     element: <Root />,
@@ -28,7 +36,11 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "/login",
-            element: <LoginPage />,
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <LoginPage />
+              </Suspense>
+            ),
           },
         ],
       },
@@ -41,32 +53,64 @@ export const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                element: <DashboardPage />,
+                element: <Navigate to="/tablero" replace />,
               },
               {
-                path: "ventas",
-                element: <SalesPage />,
+                path: "tablero",
+                element: (
+                  <Suspense fallback={<PageLoader />}>
+                    <DashboardPage />
+                  </Suspense>
+                ),
               },
               {
                 path: "inventario",
-                element: <InventoryPage />,
+                element: (
+                  <Suspense fallback={<PageLoader />}>
+                    <InventoryPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "ventas",
+                element: (
+                  <Suspense fallback={<PageLoader />}>
+                    <SalesPage />
+                  </Suspense>
+                ),
               },
               {
                 path: "clientes",
-                element: <CustomersPage />,
+                element: (
+                  <Suspense fallback={<PageLoader />}>
+                    <CustomersPage />
+                  </Suspense>
+                ),
               },
               {
                 path: "reportes",
-                element: <ReportsPage />,
+                element: (
+                  <Suspense fallback={<PageLoader />}>
+                    <ReportsPage />
+                  </Suspense>
+                ),
               },
               {
-                path: "configuracion",
-                element: <SettingsPage />,
+                path: "ajustes",
+                element: (
+                  <Suspense fallback={<PageLoader />}>
+                    <SettingsPage />
+                  </Suspense>
+                ),
               },
             ],
           },
         ],
       },
     ],
+  },
+  {
+    path: "*",
+    element: <Navigate to="/dashboard" replace />,
   },
 ]);

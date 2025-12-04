@@ -14,18 +14,29 @@ export type UpdateSupplyData = SupplyFormData & {
 export const getSupplies = async (
   searchTerm: string,
   pageIndex: number,
-  pageSize: number
+  pageSize: number,
+  signal?: AbortSignal
 ): Promise<PaginatedResponse<SupplyWithCategory>> => {
-  const { data, error } = await supabase.rpc("get_supplies", {
+  const query = supabase.rpc("get_supplies", {
     search_term_arg: searchTerm,
     page_index_arg: pageIndex,
     page_size_arg: pageSize,
   });
 
+  if (signal) query.abortSignal(signal);
+  const { data, error } = await query;
   if (error) {
+    if (
+      error.message.includes("AbortError") ||
+      error.message.includes("aborted") ||
+      signal?.aborted
+    ) {
+      throw new Error("Request cancelled");
+    }
     console.error("Error fetching supplies:", error.message);
     throw new Error(`No se pudieron cargar los insumos: ${error.message}`);
   }
+
   return data as PaginatedResponse<SupplyWithCategory>;
 };
 
